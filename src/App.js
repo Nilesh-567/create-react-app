@@ -1,89 +1,48 @@
 import React, { useState } from 'react';
+import './App.css';
 
 function App() {
-  const [number, setNumber] = useState('');
-  const [result, setResult] = useState(null);
+  const [input, setInput] = useState('');
+  const [result, setResult] = useState(0);
 
-  const calculateFactorial = (num) => {
-    if (num < 0) return 'Invalid input. Please enter a non-negative integer.';
-    if (num === 0 || num === 1) return 1;
-    let factorial = 1;
-    for (let i = 2; i <= num; i++) {
-      factorial *= i;
-    }
-    return factorial;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const num = parseInt(number);
-    if (isNaN(num)) {
-      setResult('Please enter a valid number');
+  const handleButtonClick = (value) => {
+    if (value === 'C') {
+      setInput('');
+      setResult(0);
+    } else if (value === 'CE') {
+      setInput(input.slice(0, -1));
+    } else if (value === '=') {
+      try {
+        setResult(eval(input)); // eval is used here for simplicity; avoid in production
+        setInput(eval(input).toString());
+      } catch {
+        setResult('Error');
+        setInput('');
+      }
     } else {
-      setResult(calculateFactorial(num));
+      setInput(input + value);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.header}>Factorial Calculator</h1>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="number"
-          value={number}
-          onChange={(e) => setNumber(e.target.value)}
-          placeholder="Enter a number"
-          style={styles.input}
-        />
-        <button type="submit" style={styles.button}>Calculate Factorial</button>
-      </form>
-      {result !== null && (
-        <p style={styles.result}>Factorial: {result}</p>
-      )}
+    <div className="calculator-container">
+      <div className="display">
+        <input type="text" value={input} readOnly />
+        <h2>{result}</h2>
+      </div>
+      <div className="button-grid">
+        {['%', 'CE', 'C', '⌫', '1/x', 'x²', '√', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '±', '0', '.', '='].map((value, index) => (
+          <button
+            key={index}
+            onClick={() => handleButtonClick(value === '×' ? '*' : value === '÷' ? '/' : value)}
+            className="button"
+          >
+            {value}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    fontFamily: 'Arial, sans-serif'
-  },
-  header: {
-    fontSize: '2rem',
-    color: '#333',
-    marginBottom: '20px'
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  input: {
-    padding: '10px',
-    fontSize: '1rem',
-    marginBottom: '10px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-  },
-  button: {
-    padding: '10px 20px',
-    fontSize: '1rem',
-    color: '#fff',
-    backgroundColor: '#007bff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  result: {
-    fontSize: '1.5rem',
-    color: '#333',
-    marginTop: '20px',
-  },
-};
 
 export default App;
