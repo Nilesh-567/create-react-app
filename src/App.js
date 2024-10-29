@@ -3,43 +3,91 @@ import './App.css';
 
 function App() {
   const [input, setInput] = useState('');
-  const [result, setResult] = useState(0);
 
-  const handleButtonClick = (value) => {
-    if (value === 'C') {
-      setInput('');
-      setResult(0);
-    } else if (value === 'CE') {
-      setInput(input.slice(0, -1));
-    } else if (value === '=') {
-      try {
-        setResult(eval(input)); // eval is used here for simplicity; avoid in production
-        setInput(eval(input).toString());
-      } catch {
-        setResult('Error');
-        setInput('');
-      }
-    } else {
-      setInput(input + value);
+  const handleClick = (value) => {
+    setInput(input + value);
+  };
+
+  const handleClear = () => {
+    setInput('');
+  };
+
+  const handleBackspace = () => {
+    setInput(input.slice(0, -1));
+  };
+
+  const handleCalculate = () => {
+    try {
+      setInput(eval(input).toString());
+    } catch (error) {
+      setInput('Error');
+    }
+  };
+
+  const handleSquare = () => {
+    try {
+      setInput((Math.pow(eval(input), 2)).toString());
+    } catch (error) {
+      setInput('Error');
+    }
+  };
+
+  const handleSquareRoot = () => {
+    try {
+      setInput((Math.sqrt(eval(input))).toString());
+    } catch (error) {
+      setInput('Error');
+    }
+  };
+
+  const handleReciprocal = () => {
+    try {
+      setInput((1 / eval(input)).toString());
+    } catch (error) {
+      setInput('Error');
+    }
+  };
+
+  const handlePercent = () => {
+    try {
+      setInput((eval(input) / 100).toString());
+    } catch (error) {
+      setInput('Error');
     }
   };
 
   return (
-    <div className="calculator-container">
-      <div className="display">
-        <input type="text" value={input} readOnly />
-        <h2>{result}</h2>
-      </div>
-      <div className="button-grid">
-        {['%', 'CE', 'C', '⌫', '1/x', 'x²', '√', '÷', '7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+', '±', '0', '.', '='].map((value, index) => (
-          <button
-            key={index}
-            onClick={() => handleButtonClick(value === '×' ? '*' : value === '÷' ? '/' : value)}
-            className="button"
-          >
-            {value}
-          </button>
-        ))}
+    <div className="calculator">
+      <div className="display">{input || '0'}</div>
+      <div className="buttons">
+        <button onClick={handleClear}>CE</button>
+        <button onClick={handleBackspace}>C</button>
+        <button onClick={() => handleClick('%')}>%</button>
+        <button onClick={() => handleClick('/')}>÷</button>
+
+        <button onClick={() => handleClick('7')}>7</button>
+        <button onClick={() => handleClick('8')}>8</button>
+        <button onClick={() => handleClick('9')}>9</button>
+        <button onClick={() => handleClick('*')}>×</button>
+
+        <button onClick={() => handleClick('4')}>4</button>
+        <button onClick={() => handleClick('5')}>5</button>
+        <button onClick={() => handleClick('6')}>6</button>
+        <button onClick={() => handleClick('-')}>-</button>
+
+        <button onClick={() => handleClick('1')}>1</button>
+        <button onClick={() => handleClick('2')}>2</button>
+        <button onClick={() => handleClick('3')}>3</button>
+        <button onClick={() => handleClick('+')}>+</button>
+
+        <button onClick={() => handleClick('+/-')}>+/-</button>
+        <button onClick={() => handleClick('0')}>0</button>
+        <button onClick={() => handleClick('.')}>.</button>
+        <button onClick={handleCalculate}>=</button>
+
+        <button onClick={handleSquare}>x²</button>
+        <button onClick={handleSquareRoot}>√x</button>
+        <button onClick={handleReciprocal}>1/x</button>
       </div>
     </div>
   );
